@@ -4,62 +4,76 @@
   <meta charset="UTF-8" />
   <title>访客通行证编辑</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       text-align: center;
       background-color: #eeeeee;
       margin: 0;
       padding: 0;
     }
+
     .card {
       position: relative;
       display: inline-block;
       width: 360px;
       height: 730px;
     }
+
     .bg {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    /* --- 核心修改：遮罩样式 --- */
+    /* ===== 大号头像 ===== */
+    .avatar {
+      position: absolute;
+      top: 50px;          /* 微调后更居中 */
+      left: 50px;
+      width: 255px;       /* 放大 */
+      height: 250px;
+      border-radius: 50%;
+      object-fit: cover;
+      z-index: 30;
+      background: #ffffff;
+    }
+
+    /* ===== 遮罩 ===== */
     .mask-common {
       position: absolute;
-      background-color: #f9f9f9; 
-      border-radius: 2px; 
-      z-index: 10; 
+      background-color: #f9f9f9;
+      border-radius: 2px;
+      z-index: 10;
     }
-    
-    /* --- 核心修改：字体样式 --- */
+
+    /* ===== 文本 ===== */
     .text-common {
       position: absolute;
-      font-size: 18px; 
-      color: #333333;  
+      font-size: 18px;
+      color: #333;
       font-weight: bold;
       line-height: 1.3em;
       text-align: center;
-      z-index: 20; 
-      white-space: nowrap; 
+      z-index: 20;
+      white-space: nowrap;
     }
 
-    /* --- 1. 姓名部分 (肖翊) --- */
-    /* 位置: top: 360px, left: 35px */
+    /* 姓名 */
     .name-mask {
       top: 360px;
       left: 35px;
       width: 80px;
-      height: 25px; 
+      height: 25px;
     }
     .name-text {
-      top: 360px; 
+      top: 360px;
       left: 35px;
       width: 80px;
     }
 
-    /* --- 2. 车牌部分 (闽A2051J) --- */
-    /* 位置: top: 360px, left: 120px */
+    /* 车牌 */
     .car-mask {
       top: 360px;
       left: 120px;
@@ -71,22 +85,21 @@
       left: 120px;
       width: 110px;
     }
-    
-    /* --- 3. 受访人 (新增：甘振华) --- */
-    /* 估算位置在时间栏下方，请根据实际效果微调 top 值 */
+
+    /* 受访人 */
     .interviewee-mask {
-      top: 612px; 
-      left: 60px; 
+      top: 612px;
+      left: 60px;
       width: 80px;
       height: 25px;
     }
     .interviewee-text {
-      top: 612px; 
+      top: 612px;
       left: 60px;
       width: 80px;
     }
 
-    /* --- 4. 时间部分 (保持原有逻辑) --- */
+    /* 时间 */
     .time-mask {
       top: 480px;
       left: 180px;
@@ -99,29 +112,39 @@
       left: 185px;
       font-size: 16px;
       width: 150px;
-      color: #000000; 
+      color: #000;
     }
   </style>
 </head>
+
 <body>
-  <div class="card" id="card">
-    <img src="bg1.jpg" class="bg" alt="访客通行证" id="bgImg" />
-    
+  <div class="card">
+
+    <!-- 背景 -->
+    <img src="bg1.jpg" class="bg" alt="访客通行证">
+
+    <!-- 大头像 -->
+    <img src="xx.jpg" class="avatar" alt="头像">
+
+    <!-- 姓名 -->
     <div class="mask-common name-mask"></div>
     <div class="text-common name-text">肖翊</div>
 
+    <!-- 车牌 -->
     <div class="mask-common car-mask"></div>
     <div class="text-common car-text">闽B21388</div>
 
+    <!-- 受访人 -->
     <div class="mask-common interviewee-mask"></div>
     <div class="text-common interviewee-text">邹复民</div>
 
+    <!-- 时间 -->
     <div class="mask-common time-mask"></div>
     <div class="text-common time-text" id="timeText"></div>
+
   </div>
 
   <script>
-    // 本地时间格式化函数
     function formatTime(date) {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -131,14 +154,10 @@
       return `${y}-${m}-${d} ${hh}:${mm}`;
     }
 
-    // 页面加载后更新时间文本
     document.addEventListener('DOMContentLoaded', () => {
       setInterval(() => {
         const now = new Date();
-
-        // 当前时间前1小时
-        const prev1h = new Date(now.getTime() - 1 * 60 * 60 * 1000);
-        // 当前时间后2小时
+        const prev1h = new Date(now.getTime() - 60 * 60 * 1000);
         const next2h = new Date(now.getTime() + 2 * 60 * 60 * 1000);
 
         document.getElementById('timeText').innerHTML =
